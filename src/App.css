@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Space+Grotesk:400,500,600,700&display=swap');
+
+
 .App {
   text-align: center;
 }
@@ -12,7 +15,14 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+body {
+  background-color: #454545; /* dark gray */
+  color: #f5f5f5; /* light gray */
+}
 
+a {
+  color: #d3d3d3; /* gray */
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -29,6 +39,11 @@
   justify-content: left;
 
 }
+.header{
+  display: flex;
+  justify-content: left;
+
+}
 .logo{
   max-width: 100px;
   max-height: 100px;
@@ -37,30 +52,47 @@
 
 .title{
   max-height: 100px;
-  border: 1px solid black;
-  line-height: 6;
-  width: 300px;
-  padding: 10px;
+  line-height: 2;
   margin: 20px;
+  font-size: 40px;
 }
 
 .openApp{
-  border: 1px solid black;
-  border-radius: 16px;
+  border-radius: 15px;
   height: 50px;
   width: 200px;
-  margin:20px;
-  margin-left: 500px;
+  margin:40px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  background-color: #FF6000;
+  color: white;
+  margin-left: auto;
+}
 
+.testing{
+  margin-left: 200px;
+  margin-top: 100px;
+}
+.buttons{
+  margin-left: 50px;
+  border-radius: 15px;
+  padding: 10px 20px;
+  font-family: 'Space Grotesk';
+  font-weight: bold;
 }
 .connectWallet{
-  margin:20px;
-  margin-left: 500px;
+  margin: 40px;
+  margin-left: auto;
 }
 
 .splash{
   text-align: center;
   margin-top: 200px;
+  font-size: 20px;
+}
+.font{
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 .App-link {
@@ -68,7 +100,38 @@
 }
 .colors{
   
+  
 }
+
+.inheritance{
+  margin-left: 50px;
+}
+
+form {
+  width: 500px; 
+  margin: 0 auto; 
+}
+
+form label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+form label > span {
+  flex-basis: 150px;
+  margin-right: 16px;
+  text-align: right;
+}
+
+form label > input,
+form label > select {
+  flex: 1;
+  width: 150px;
+}
+
+
 
 @keyframes App-logo-spin {
   from {

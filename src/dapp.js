@@ -5,15 +5,20 @@ import {
   getDefaultWallets,
 } from '@rainbow-me/rainbowkit';
 import { WagmiConfig, configureChains, createClient } from 'wagmi';
-import { arbitrum, mainnet, optimism, polygon } from 'wagmi/chains';
 import { useEffect, useState } from "react"
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import abi from './abi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { baseGoerli } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 
+const { ethers } = require("ethers");
+
+
+
 const { chains, provider } = configureChains(
-    [mainnet, polygon, optimism, arbitrum],
+    [baseGoerli],
     [
       alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
       publicProvider()
@@ -21,7 +26,7 @@ const { chains, provider } = configureChains(
   );
   
   const { connectors } = getDefaultWallets({
-    appName: 'My RainbowKit App',
+    appName: 'Hello Kitty App',
     projectId: 'YOUR_PROJECT_ID',
     chains
   });
@@ -33,25 +38,133 @@ const { chains, provider } = configureChains(
   })
 
 export const Dapp = () => {
+  
+    const [manageClicked, setManageClicked] = useState(false);
+    const [claimClicked, setClaimClicked] = useState(false);
+
+
+    
+    const Manage = () => {
+      const [beneficiaryName, setBeneficiaryName] = useState('');
+      const [beneficiaryAddress, setBeneficiaryAddress] = useState('');
+      const [beneficiaryAmount, setBeneficiaryAmount] = useState('');
+    
+      const handleBeneficiaryNameChange = (event) => {
+        setBeneficiaryName(event.target.value);
+      };
+      const handleBeneficiaryAddressChange = (event) => {
+        setBeneficiaryAddress(event.target.value);
+      };
+      const handleBeneficiaryAmountChange = (event) => {
+        setBeneficiaryAmount(event.target.value);
+      };
+
+      async function createWill() {
+        try {
+          const provider = new ethers.providers.Web3Provider(window.ethereum)
+          await provider.send("eth_requestAccounts", []);
+          const signer = provider.getSigner()
+          const legacyKeeperAddress = "0xeF35e201aaBEFe47Ff3e01c87ef6D35878588B0C"
+          const legacyKeeper = new ethers.Contract(legacyKeeperAddress, abi, provider);
+          const legacyKeeperWithSigner = legacyKeeper.connect(signer);
+          await legacyKeeperWithSigner.addBeneficiary(beneficiaryName, beneficiaryAddress, beneficiaryAmount);
+        } catch (err) {
+          console.log(err);
+        }
+        
+        console.log('Created will');
+      }
+      
+      return(
+          <div>
+              <h1 className="inheritance">Manage Inheritance</h1>
+              <form>
+          <label htmlFor="beneficiaryName">Beneficiary Name</label>
+          <input
+            type="text"
+            id="beneficiaryName"
+            name="beneficiaryName"
+            value={beneficiaryName}
+            onChange={handleBeneficiaryNameChange}
+          />
+          <label htmlFor="beneficiaryAddress">Beneficiary Address</label>
+          <input
+            type="text"
+            id="beneficiaryAddress"
+            name="beneficiaryAddress"
+            value={beneficiaryAddress}
+            onChange={handleBeneficiaryAddressChange}
+          />
+          <label htmlFor="beneficiaryAmount">Beneficiary Amount</label>
+          <input
+            type="text"
+            id="beneficiaryAmount"
+            name="beneficiaryAmount"
+            value={beneficiaryAmount}
+            onChange={handleBeneficiaryAmountChange}
+          />
+        <button className="buttons" onClick={()=> createWill()}> Submit </button>
+        </form>
+        <button className="buttons" onClick={()=> setManageClicked(false)}> Back </button>
+          </div>
+      )
+    }
+
+
+    
+    
+    const Claim = () => {
+      const [inheritorAddress, setInheritorAddress] = useState('');
+      const handleInheritorChange = (event) => {
+        setInheritorAddress(event.target.value);
+      };
+      
+      return(
+          <div>
+              <h1>Claim Inheritance</h1>
+              <form>
+          <label htmlFor="inheritorAddress">Inheritor Address</label>
+          <input
+            type="text"
+            id="inheritorAddress"
+            name="inheritorAddress"
+            value={inheritorAddress}
+            onChange={handleInheritorChange}
+          />
+          <button className="buttons" onClick={()=> setInheritorAddress(false)}> Claim </button>
+          </form>
+              <button className="buttons" onClick={()=> setClaimClicked(false)}> Back </button>
+          </div>
+      )
+    }    
+
+
+    
     return(
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains}>
       <>
     <div className=  "header">
-            <img className="logo" src="https://cdn-icons-png.flaticon.com/512/126/126472.png"></img>
-        <div className= "title">LOGO</div>
-        <div className="connectWallet">
-        <ConnectButton>Connect</ConnectButton>
+            <a href="/">
+            <img className="logo" src="https://pixelartmaker-data-78746291193.nyc3.digitaloceanspaces.com/image/cdfe8bf57fec8a8.png"></img>
+            </a>
+        <div className= "title">Legacy Keeper</div>
+          <div className="connectWallet">
+          <ConnectButton>Connect</ConnectButton>
+          </div>
         </div>
+     
+        { !manageClicked && !claimClicked && <>
+        <h1 className="testing"> TESTING TESTING</h1>
+        <button className="buttons" onClick={()=> setManageClicked(true)}> Manage Inheritance </button>
+        <button className="buttons" onClick={()=> setClaimClicked(true)}> Claim Inheritance </button>
+        </> 
+        }
 
-
-        
-        </div>
-        <h1> TESTING TESTING</h1>
-        
-         </> 
+        { manageClicked && <Manage />}
+        { claimClicked && <Claim />}
+        </> 
          
-    
          </RainbowKitProvider>
     </WagmiConfig> )
          
