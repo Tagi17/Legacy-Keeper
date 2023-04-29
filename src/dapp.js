@@ -59,26 +59,21 @@ export const Dapp = () => {
         setBeneficiaryAmount(event.target.value);
       };
 
-      async function createWill() {
-        try {
-          const provider = new ethers.providers.Web3Provider(window.ethereum)
-          await provider.send("eth_requestAccounts", []);
-          const signer = provider.getSigner()
-          const legacyKeeperAddress = "0xeF35e201aaBEFe47Ff3e01c87ef6D35878588B0C"
-          const legacyKeeper = new ethers.Contract(legacyKeeperAddress, abi, provider);
-          const legacyKeeperWithSigner = legacyKeeper.connect(signer);
-          await legacyKeeperWithSigner.addBeneficiary(beneficiaryName, beneficiaryAddress, beneficiaryAmount);
-        } catch (err) {
-          console.log(err);
-        }
-        
-        console.log('Created will');
+      const createWill = async (event) => {
+      
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        const signer = provider.getSigner();
+        const legacyKeeperAddress = "0xeF35e201aaBEFe47Ff3e01c87ef6D35878588B0C";
+        const legacyKeeper = new ethers.Contract(legacyKeeperAddress, abi, provider);
+        const legacyKeeperWithSigner = legacyKeeper.connect(signer);
+        await legacyKeeperWithSigner.addBeneficiary(beneficiaryName, beneficiaryAddress, beneficiaryAmount,0);
       }
       
       return(
           <div>
               <h1 className="inheritance">Manage Inheritance</h1>
-              <form>
+             
           <label htmlFor="beneficiaryName">Beneficiary Name</label>
           <input
             type="text"
@@ -104,7 +99,7 @@ export const Dapp = () => {
             onChange={handleBeneficiaryAmountChange}
           />
         <button className="buttons" onClick={()=> createWill()}> Submit </button>
-        </form>
+        
         <button className="buttons" onClick={()=> setManageClicked(false)}> Back </button>
           </div>
       )
