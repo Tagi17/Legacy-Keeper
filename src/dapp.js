@@ -9,8 +9,9 @@ import { useEffect, useState } from "react"
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import abi from './abi';
+import USDCabi from './USDCabi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { baseGoerli } from 'wagmi/chains';
+import { polygonMumbai } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 
 const { ethers } = require("ethers");
@@ -18,7 +19,7 @@ const { ethers } = require("ethers");
 
 
 const { chains, provider } = configureChains(
-    [baseGoerli],
+    [polygonMumbai],
     [
       alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
       publicProvider()
@@ -43,6 +44,17 @@ export const Dapp = () => {
     const [claimClicked, setClaimClicked] = useState(false);
 
 
+    const mintTokens = async () => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      const signer = provider.getSigner();
+      const USDCAddress = "0x871C28761992B68E992590AA01d3163F4b35e7Cd";
+      const USDC = new ethers.Contract(USDCAddress, USDCabi, provider);
+      const USDCWithSigner = USDC.connect(signer);
+      await USDCWithSigner.mint();
+    }
+
+
     
     const Manage = () => {
       const [beneficiaryName, setBeneficiaryName] = useState('');
@@ -64,12 +76,14 @@ export const Dapp = () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         await provider.send("eth_requestAccounts", []);
         const signer = provider.getSigner();
-        const legacyKeeperAddress = "0xeF35e201aaBEFe47Ff3e01c87ef6D35878588B0C";
+        const legacyKeeperAddress = "0x0cE31f7D182BDAEA007e9974a631e8F9Cd9d8b0D";
         const legacyKeeper = new ethers.Contract(legacyKeeperAddress, abi, provider);
         const legacyKeeperWithSigner = legacyKeeper.connect(signer);
         await legacyKeeperWithSigner.addBeneficiary(beneficiaryName, beneficiaryAddress, beneficiaryAmount,0);
       }
-      
+
+
+
       return(
           <div>
               <h1 className="inheritance">Manage Inheritance</h1>
@@ -113,11 +127,22 @@ export const Dapp = () => {
       const handleInheritorChange = (event) => {
         setInheritorAddress(event.target.value);
       };
+
+      const claimInheritance = async (event) => {
+      
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        const signer = provider.getSigner();
+        const legacyKeeperAddress = "0x240469aed62F11EDC58073940d0010882dbE360e";
+        const legacyKeeper = new ethers.Contract(legacyKeeperAddress, abi, provider);
+        const legacyKeeperWithSigner = legacyKeeper.connect(signer);
+        await legacyKeeperWithSigner.claimInheritance(inheritorAddress);
+      }
       
       return(
           <div>
               <h1>Claim Inheritance</h1>
-              <form>
+             
           <label htmlFor="inheritorAddress">Inheritor Address</label>
           <input
             type="text"
@@ -126,8 +151,8 @@ export const Dapp = () => {
             value={inheritorAddress}
             onChange={handleInheritorChange}
           />
-          <button className="buttons" onClick={()=> setInheritorAddress(false)}> Claim </button>
-          </form>
+          <button className="buttons" onClick={()=> claimInheritance()}> Claim </button>
+         
               <button className="buttons" onClick={()=> setClaimClicked(false)}> Back </button>
           </div>
       )
@@ -150,7 +175,7 @@ export const Dapp = () => {
         </div>
      
         { !manageClicked && !claimClicked && <>
-        <button className="buttons">Mint $100,000 test tokens</button>
+        <button className="buttons" onClick={() => mintTokens()}>Mint $100,000 test tokens</button>
         <h1 className="testing"> TESTING TESTING</h1>
         <button className="buttons" onClick={()=> setManageClicked(true)}> Manage Inheritance </button>
         <button className="buttons" onClick={()=> setClaimClicked(true)}> Claim Inheritance </button>
