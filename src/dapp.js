@@ -150,6 +150,7 @@ export const Dapp = () => {
         </div>
      
         { !manageClicked && !claimClicked && <>
+        <button className="buttons">Mint $100,000 test tokens</button>
         <h1 className="testing"> TESTING TESTING</h1>
         <button className="buttons" onClick={()=> setManageClicked(true)}> Manage Inheritance </button>
         <button className="buttons" onClick={()=> setClaimClicked(true)}> Claim Inheritance </button>
