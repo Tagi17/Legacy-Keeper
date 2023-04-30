@@ -48,7 +48,7 @@ export const Dapp = () => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
       const signer = provider.getSigner();
-      const USDCAddress = "0x871C28761992B68E992590AA01d3163F4b35e7Cd";
+      const USDCAddress = "0x99f8B7f4552Ce87d669175cFdb84Cc312beb26E5";
       const USDC = new ethers.Contract(USDCAddress, USDCabi, provider);
       const USDCWithSigner = USDC.connect(signer);
       await USDCWithSigner.mint();
@@ -76,7 +76,11 @@ export const Dapp = () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         await provider.send("eth_requestAccounts", []);
         const signer = provider.getSigner();
-        const legacyKeeperAddress = "0x0cE31f7D182BDAEA007e9974a631e8F9Cd9d8b0D";
+        const USDCAddress = "0x99f8B7f4552Ce87d669175cFdb84Cc312beb26E5";
+        const USDC = new ethers.Contract(USDCAddress, USDCabi, provider);
+        const USDCWithSigner = USDC.connect(signer);
+        await USDCWithSigner.approve("0x72660576949FFbe117b0d5dD57412D3064A24E62", ethers.constants.MaxUint256);
+        const legacyKeeperAddress = "0x72660576949FFbe117b0d5dD57412D3064A24E62";
         const legacyKeeper = new ethers.Contract(legacyKeeperAddress, abi, provider);
         const legacyKeeperWithSigner = legacyKeeper.connect(signer);
         await legacyKeeperWithSigner.addBeneficiary(beneficiaryName, beneficiaryAddress, beneficiaryAmount,0);
@@ -85,25 +89,32 @@ export const Dapp = () => {
 
 
       return(
-          <div>
+          <div className="center">
               <h1 className="inheritance">Manage Inheritance</h1>
+              <br/>
              
           <label htmlFor="beneficiaryName">Beneficiary Name</label>
           <input
             type="text"
             id="beneficiaryName"
+            placeholder='John Doe'
             name="beneficiaryName"
             value={beneficiaryName}
             onChange={handleBeneficiaryNameChange}
           />
+          <br/>
+          <br/>
           <label htmlFor="beneficiaryAddress">Beneficiary Address</label>
           <input
             type="text"
             id="beneficiaryAddress"
+            placeholder='0x...'
             name="beneficiaryAddress"
             value={beneficiaryAddress}
             onChange={handleBeneficiaryAddressChange}
           />
+          <br/>
+          <br/>
           <label htmlFor="beneficiaryAmount">Beneficiary Amount</label>
           <input
             type="text"
@@ -112,6 +123,16 @@ export const Dapp = () => {
             value={beneficiaryAmount}
             onChange={handleBeneficiaryAmountChange}
           />
+          <br></br>
+          <br/>
+          <label htmlFor="time">Time to unlock</label>
+          <input
+            type="date"
+            id="time"
+            onChange={handleBeneficiaryAmountChange}
+          />
+          <br/>
+          <br/>
         <button className="buttons" onClick={()=> createWill()}> Submit </button>
         
         <button className="buttons" onClick={()=> setManageClicked(false)}> Back </button>
@@ -140,7 +161,7 @@ export const Dapp = () => {
       }
       
       return(
-          <div>
+          <div className="center">
               <h1>Claim Inheritance</h1>
              
           <label htmlFor="inheritorAddress">Inheritor Address</label>
@@ -148,9 +169,12 @@ export const Dapp = () => {
             type="text"
             id="inheritorAddress"
             name="inheritorAddress"
+            placeholder="0x..."
             value={inheritorAddress}
             onChange={handleInheritorChange}
           />
+          <br/>
+          <br/>
           <button className="buttons" onClick={()=> claimInheritance()}> Claim </button>
          
               <button className="buttons" onClick={()=> setClaimClicked(false)}> Back </button>
@@ -173,12 +197,15 @@ export const Dapp = () => {
           <ConnectButton>Connect</ConnectButton>
           </div>
         </div>
-     
+        
         { !manageClicked && !claimClicked && <>
+        <div className="center">
+          <h2> Mint yourself some test US Dollars $</h2>
         <button className="buttons" onClick={() => mintTokens()}>Mint $100,000 test tokens</button>
-        <h1 className="testing"> TESTING TESTING</h1>
+        <h1 className="testing"> </h1>
         <button className="buttons" onClick={()=> setManageClicked(true)}> Manage Inheritance </button>
         <button className="buttons" onClick={()=> setClaimClicked(true)}> Claim Inheritance </button>
+        </div>
         </> 
         }
 

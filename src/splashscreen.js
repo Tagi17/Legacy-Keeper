@@ -20,8 +20,9 @@ export const Splashscreen = () => {
         
         <div className = "container">
             <div className="splash"> 
-                <h1 className="header">Welcome to Legacy Keeper</h1>
-                <h2>Please gimmie yo money</h2>
+                <h1 className>Secure your legacy </h1>
+                <h2>with effortless inheritance</h2>
+                <img src="https://cdn.pixabay.com/photo/2020/08/12/15/21/family-5482934_1280.png"/>
             </div>
         </div>
         </>}

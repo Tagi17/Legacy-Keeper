@@ -90,6 +90,7 @@ a {
   text-align: center;
   margin-top: 200px;
   font-size: 20px;
+  
 }
 .font{
   font-family: 'Space Grotesk', sans-serif;
@@ -105,6 +106,10 @@ a {
 
 .inheritance{
   margin-left: 50px;
+}
+
+.center {
+  text-align: center;
 }
 
 form {
